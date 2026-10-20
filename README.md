@@ -16,6 +16,11 @@ Gemini = interpretação textual e material didático
 
 O arquivo original é imutável. A análise produz dados; a revisão produz um plano de edição; somente o plano aprovado produz arquivos de saída.
 
+Na implementação atual, Rust, SQLite, FFprobe e FFmpeg cobrem ingestão, análise
+determinística, revisão e renderização. Whisper e Gemini são arquitetura
+planejada: não existem módulos, dependências ou endpoints ativos para esses dois
+providers neste commit.
+
 ## Documentação
 
 - [Arquitetura](docs/ARCHITECTURE.md)
@@ -96,3 +101,23 @@ GET  /api/projects/:id/render-plans/:plan_id
 ```
 
 O render aceita `remove_analysis_ids` e `normalize_audio`. Os originais permanecem intactos.
+
+## Verificação segura
+
+Os testes não exigem iniciar o servidor nem processar mídia real:
+
+```bash
+cargo test --locked --manifest-path backend/Cargo.toml
+cd frontend
+npm ci
+npm test
+npm run build
+```
+
+Esses comandos cobrem parsers, sanitização de nomes, combinação de cortes e
+lógica de edição no frontend. Upload real, SSE, FFmpeg/FFprobe, persistência,
+Docker e renderização ponta a ponta continuam dependentes de validação de
+integração.
+
+Não há arquivo de licença no nível do repositório. Confirme os termos antes de
+reutilizar ou redistribuir o projeto.
