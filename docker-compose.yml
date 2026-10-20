@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      network: host
+    environment:
+      BIND_ADDR: 0.0.0.0:3000
+      DATABASE_URL: sqlite:///data/video_editor.db
+      STORAGE_ROOT: /data/storage
+      FFPROBE_BIN: ffprobe
+      FFMPEG_BIN: ffmpeg
+      RUST_LOG: video_editor=info
+    volumes:
+      - video_editor_data:/data
+    expose:
+      - "3000"
+
+  frontend:
+    build:
+      context: ./frontend
+      network: host
+    depends_on:
+      - backend
+    ports:
+      - "${VIDEO_EDITOR_PORT:-8080}:80"
+
+volumes:
+  video_editor_data:
